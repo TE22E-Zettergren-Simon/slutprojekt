@@ -20,7 +20,7 @@ public class Main extends Application {
             ConnectionHolder.getInstance().connect(socket);
 
             // If connected, loads the start view
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("views/home.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("views/start.fxml"));
             scene = new Scene(fxmlLoader.load());
         } catch (SocketException e) {
             // If not connected, loads an info view
