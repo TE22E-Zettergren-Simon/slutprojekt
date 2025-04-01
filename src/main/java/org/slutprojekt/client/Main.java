@@ -7,16 +7,28 @@ import javafx.stage.Stage;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
-        Socket socket = new Socket();
-        socket.connect(new InetSocketAddress("127.0.0.1", 8080));
-        ConnectionHolder.getInstance().connect(socket);
+        Scene scene;
+        try {
+            // Attempts to connect to the server
+            Socket socket = new Socket();
+            socket.connect(new InetSocketAddress("127.0.0.1", 8080));
+            ConnectionHolder.getInstance().connect(socket);
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("views/home.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
+            // If connected, loads the start view
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("views/home.fxml"));
+            scene = new Scene(fxmlLoader.load());
+        } catch (SocketException e) {
+            // If not connected, loads an info view
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("views/no-connection.fxml"));
+            scene = new Scene(fxmlLoader.load());
+        }
+
+        // Shows the loaded view to the user
         stage.setScene(scene);
         stage.setTitle("Skibider");
         stage.show();

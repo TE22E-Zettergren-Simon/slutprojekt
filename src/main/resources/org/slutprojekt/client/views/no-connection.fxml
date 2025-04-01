@@ -12,7 +12,7 @@
             prefHeight="400.0" prefWidth="600.0"
             alignment="CENTER" spacing="10.0">
 
-    <Label fx:id="infoLabel" text="Your connection was lost"/>
+    <Label fx:id="infoLabel" text="Could not connect to a server"/>
     <Button onAction="#tryReconnecting" text="Click to reconnect"/>
 
 </VBox>
