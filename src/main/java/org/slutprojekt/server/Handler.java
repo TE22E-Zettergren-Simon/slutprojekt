@@ -1,5 +1,6 @@
 package org.slutprojekt.server;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import org.slutprojekt.shared.SocketConnection;
 import org.slutprojekt.shared.models.LoginForm;
 import org.slutprojekt.shared.models.Message;
@@ -75,7 +76,9 @@ public class Handler implements Runnable {
         }
 
         // Validate password
-        if (!mockDB.get(loginForm.getUsername()).equals(loginForm.getPassword())) {
+        String dbPasswordHash = mockDB.get(loginForm.getUsername());
+        BCrypt.Result result = BCrypt.verifyer().verify(loginForm.getPassword().toCharArray(), dbPasswordHash);
+        if (!result.verified) {
             throw new IllegalStateException("Password does not match");
         }
 
@@ -97,8 +100,9 @@ public class Handler implements Runnable {
             throw new IllegalStateException("Username already exists");
         }
 
-        // Create the user in the db
-        mockDB.put(signupForm.getUsername(), signupForm.getPassword());
+        // Create the user in the db with a hashed password for security
+        String passwordHash = BCrypt.withDefaults().hashToString(12, signupForm.getPassword().toCharArray());
+        mockDB.put(signupForm.getUsername(), passwordHash);
 
         // Login to the user
         user = new User(0, signupForm.getUsername());

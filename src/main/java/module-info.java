@@ -2,6 +2,7 @@ module org.slutprojekt {
     requires javafx.controls;
     requires javafx.fxml;
     requires java.instrument;
+    requires bcrypt;
 
 
     opens org.slutprojekt.client to javafx.fxml;
