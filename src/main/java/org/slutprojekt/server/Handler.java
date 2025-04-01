@@ -24,26 +24,32 @@ public class Handler implements Runnable {
     @Override
     public void run() {
         try {
+            // Wait for a message to arrive, handle it, repeat
             while (true) {
-                Message message = socketConnection.read();
-                switch (message.getMessage()) {
+                Message in = socketConnection.read();
+                Message out;
+                // Check the command and verify the provided data
+                switch (in.getMessage()) {
                     case "login":
-                        if (!(message.getData() instanceof LoginForm)) {
-                            //TODO: respond with an error message to the client instead of crashing
-                            throw new IllegalStateException("Wrong datatype for the command");
+                        if (in.getData() instanceof LoginForm) {
+                            out = login((LoginForm) in.getData());
+                        } else {
+                            out = new Message<>("error", "Wrong datatype for the command");
                         }
-                        login((LoginForm) message.getData());
+                        socketConnection.write(out);
                         break;
                     case "signup":
-                        if (!(message.getData() instanceof LoginForm)) {
-                            //TODO: respond to the client instead of crashing
-                            throw new IllegalStateException("Wrong datatype for the command");
+                        if (in.getData() instanceof LoginForm) {
+                            out = signup((LoginForm) in.getData());
+                        } else {
+                            out = new Message<>("error", "Wrong datatype for the command");
                         }
-                        signup((LoginForm) message.getData());
+                        socketConnection.write(out);
                         break;
                     default:
-                        //TODO: respond to the client instead of crashing
-                        throw new IllegalStateException("Unknown command");
+                        out = new Message<>("error", "Unknown command");
+                        socketConnection.write(out);
+                        break;
                 }
 
                 // old stuff, might be wanted for testing
@@ -62,42 +68,50 @@ public class Handler implements Runnable {
         }
     }
 
-    //TODO: replace all exceptions with messages to the client
-    private void login(LoginForm loginForm) {
+    // Logs into an exising user not currently in use
+    // Fails if loginForm is empty, the user doesn't exist, the password is wrong or the user currently is in use
+    // If it fails an error message is returned
+    // If successful an ok is returned
+    //TODO: make sure the user isn't currently logged in
+    private Message<String> login(LoginForm loginForm) {
         // Username and password must exist
         if (loginForm.getUsername() == null || loginForm.getPassword() == null ||
                 loginForm.getUsername().isBlank() || loginForm.getPassword().isBlank()) {
-            throw new IllegalStateException("Username and password are required");
+            return new Message<>("error", "Username and password are required");
         }
 
         // DB must contain the user that is being logged in to
         if (!mockDB.containsKey(loginForm.getUsername())) {
-            throw new IllegalStateException("Username not found");
+            return new Message<>("error", "Username not found");
         }
 
         // Validate password
         String dbPasswordHash = mockDB.get(loginForm.getUsername());
         BCrypt.Result result = BCrypt.verifyer().verify(loginForm.getPassword().toCharArray(), dbPasswordHash);
         if (!result.verified) {
-            throw new IllegalStateException("Password does not match");
+            return new Message<>("error", "Password does not match");
         }
 
         // Login to the user
         //TODO: id should not always be zero, correct implementation when real db exists
         user = new User(0, loginForm.getUsername());
+        return new Message<>("ok", null);
     }
 
-    //TODO: replace all exceptions with messages to the client
-    private void signup(LoginForm signupForm) {
+    // Create a new user in the db and log into it
+    // Fails if signupForm is empty or the username is taken
+    // If it fails an error message is returned
+    // If successful an ok is returned
+    private Message<String> signup(LoginForm signupForm) {
         // Username and password must exist
         if (signupForm.getUsername() == null || signupForm.getPassword() == null ||
                 signupForm.getUsername().isBlank() || signupForm.getPassword().isBlank()) {
-            throw new IllegalStateException("Username and password are required");
+            return new Message<>("error", "Username and password are required");
         }
 
         // Don't allow duplicate usernames
         if (mockDB.containsKey(signupForm.getUsername())) {
-            throw new IllegalStateException("Username already exists");
+            return new Message<>("error", "That username is taken");
         }
 
         // Create the user in the db with a hashed password for security
@@ -106,5 +120,6 @@ public class Handler implements Runnable {
 
         // Login to the user
         user = new User(0, signupForm.getUsername());
+        return new Message<>("ok", null);
     }
 }
