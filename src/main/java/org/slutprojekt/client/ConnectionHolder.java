@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class ConnectionHolder {
-    private static ConnectionHolder instance = new ConnectionHolder();
+    private static final ConnectionHolder instance = new ConnectionHolder();
     private SocketConnection socketConnection;
 
-    private ConnectionHolder() {};
+    private ConnectionHolder() {}
 
     public static ConnectionHolder getInstance() {
         return instance;

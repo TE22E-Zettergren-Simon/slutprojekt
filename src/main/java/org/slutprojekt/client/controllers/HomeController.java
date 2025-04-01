@@ -4,10 +4,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.slutprojekt.client.ConnectionHolder;
+import org.slutprojekt.client.FXMLUtils;
 import org.slutprojekt.shared.models.Message;
 
 import java.io.IOException;
-import java.lang.instrument.IllegalClassFormatException;
+import java.net.SocketException;
 
 public class HomeController {
     @FXML
@@ -19,13 +20,22 @@ public class HomeController {
     private void submit() {
         String text = textField.getText();
         Message messageOut = new Message(text, null);
-        Message messageIn;
         try {
             ConnectionHolder.getInstance().getSocketConnection().write(messageOut);
-            messageIn = ConnectionHolder.getInstance().getSocketConnection().read();
-        } catch (ClassNotFoundException | IOException e) {
+            if (!text.equalsIgnoreCase("exit")) {
+                Message messageIn = ConnectionHolder.getInstance().getSocketConnection().read();
+                label.setText(messageIn.getMessage());
+            } else {
+                FXMLUtils.loadNewView("views/no-connection.fxml", label.getScene());
+            }
+        } catch (SocketException e) {
+            try {
+                FXMLUtils.loadNewView("views/no-connection.fxml", label.getScene());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-        label.setText(messageIn.getMessage());
+        } catch (ClassNotFoundException ignored) {}
     }
 }

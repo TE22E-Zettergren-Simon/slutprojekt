@@ -19,13 +19,14 @@ public class Handler implements Runnable {
             while (true) {
                 Message message = socketConnection.read();
                 if (message.getMessage().equalsIgnoreCase("exit")) {
+                    socketConnection.close();
                     System.out.println("Stopping thread");
                     break;
                 }
                 socketConnection.write(message);
                 System.out.println("Echoed: " + message.getMessage());
             }
-        } catch (ClassNotFoundException | IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
