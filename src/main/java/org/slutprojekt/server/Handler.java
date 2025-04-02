@@ -9,16 +9,20 @@ import org.slutprojekt.shared.models.User;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 
 public class Handler implements Runnable {
     private SocketConnection socketConnection;
-    private HashMap<String, String> mockDB;
+    private Connection dbConnection;
     private User user;
 
-    public Handler(Socket socket, HashMap<String, String> mockDB) throws IOException {
+    public Handler(Socket socket, Connection dbConnection) throws IOException {
         socketConnection = new SocketConnection(socket);
-        this.mockDB = mockDB;
+        this.dbConnection = dbConnection;
     }
 
     @Override
@@ -80,23 +84,31 @@ public class Handler implements Runnable {
             return new Message<>("error", "Username and password are required");
         }
 
-        // DB must contain the user that is being logged in to
-        if (!mockDB.containsKey(loginForm.getUsername())) {
-            return new Message<>("error", "Username not found");
-        }
+        try {
+            Statement statement = dbConnection.createStatement();
 
-        // Validate password
-        String dbPasswordHash = mockDB.get(loginForm.getUsername());
-        BCrypt.Result result = BCrypt.verifyer().verify(loginForm.getPassword().toCharArray(), dbPasswordHash);
-        if (!result.verified) {
-            return new Message<>("error", "Password does not match");
-        }
+            // DB must contain the user that is being logged in to
+            ResultSet results = statement.executeQuery("SELECT PasswordHash FROM Users WHERE Username = '" + loginForm.getUsername() + "';");
+            if (!results.next()) {
+                return new Message<>("error", "Username not found");
+            }
 
-        // Login to the user
-        //TODO: id should not always be zero, correct implementation when real db exists
-        System.out.println("Logged in a user");
-        user = new User(0, loginForm.getUsername());
-        return new Message<>("ok", "");
+            // Validate password
+            String dbPasswordHash = results.getString("PasswordHash");
+            BCrypt.Result result = BCrypt.verifyer().verify(loginForm.getPassword().toCharArray(), dbPasswordHash);
+            if (!result.verified) {
+                return new Message<>("error", "Password does not match");
+            }
+
+            // Login to the user
+            //TODO: id should not always be zero, correct implementation when real db exists
+            System.out.println("Logged in a user");
+            user = new User(0, loginForm.getUsername());
+            return new Message<>("ok", "");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new Message<>("error", "A database error occurred");
+        }
     }
 
     // Create a new user in the db and log into it
@@ -110,18 +122,26 @@ public class Handler implements Runnable {
             return new Message<>("error", "Username and password are required");
         }
 
-        // Don't allow duplicate usernames
-        if (mockDB.containsKey(signupForm.getUsername())) {
-            return new Message<>("error", "That username is taken");
+        try {
+            Statement statement = dbConnection.createStatement();
+
+            // Don't allow duplicate usernames
+            ResultSet results = statement.executeQuery("SELECT * FROM Users WHERE Username = '" + signupForm.getUsername() + "';");
+            if (results.next()) {
+                return new Message<>("error", "That username is taken");
+            }
+
+            // Create the user in the db with a hashed password for security
+            String passwordHash = BCrypt.withDefaults().hashToString(12, signupForm.getPassword().toCharArray());
+            statement.execute("INSERT INTO Users(Username, PasswordHash) VALUES('" + signupForm.getUsername() + "', '" + passwordHash + "');");
+
+            // Login to the user
+            System.out.println("Signed up a new user");
+            user = new User(0, signupForm.getUsername());
+            return new Message<>("ok", "");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new Message<>("error", "A database error occurred");
         }
-
-        // Create the user in the db with a hashed password for security
-        String passwordHash = BCrypt.withDefaults().hashToString(12, signupForm.getPassword().toCharArray());
-        mockDB.put(signupForm.getUsername(), passwordHash);
-
-        // Login to the user
-        System.out.println("Signed up a new user");
-        user = new User(0, signupForm.getUsername());
-        return new Message<>("ok", "");
     }
 }

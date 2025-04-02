@@ -3,6 +3,7 @@ module org.slutprojekt {
     requires javafx.fxml;
     requires java.instrument;
     requires bcrypt;
+    requires java.sql;
 
 
     opens org.slutprojekt.client to javafx.fxml;
