@@ -122,6 +122,11 @@ public class Handler implements Runnable {
             return new Message<>("error", "Username and password are required");
         }
 
+        // Username cannot be more than 20 chars
+        if (signupForm.getUsername().length() > 20) {
+            return new Message<>("error", "Username is too long, max 20");
+        }
+
         try {
             Statement statement = dbConnection.createStatement();
 
