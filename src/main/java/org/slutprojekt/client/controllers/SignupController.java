@@ -4,6 +4,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import org.slutprojekt.client.ConnectionHolder;
+import org.slutprojekt.client.FXMLUtils;
+import org.slutprojekt.shared.models.LoginForm;
+import org.slutprojekt.shared.models.Message;
+
+import java.io.IOException;
+import java.net.SocketException;
 
 public class SignupController {
     @FXML
@@ -37,7 +44,34 @@ public class SignupController {
             return;
         }
 
-        //TODO: talk to server
-        errorLabel.setText("TODO");
+        // Try to sign up to the server
+        try {
+            // Send message
+            Message<LoginForm> out = new Message<>(
+                    "signup",
+                    new LoginForm(username, password1)
+            );
+            ConnectionHolder.getInstance().getSocketConnection().write(out);
+
+            Message in = ConnectionHolder.getInstance().getSocketConnection().read();
+
+            // The returned data should always be a string
+            if (!(in.getData() instanceof String)) {
+                errorLabel.setText("Wrong data format");
+                return;
+            }
+
+            // Display the error to the user if it is an error
+            if (in.getMessage().equals("error")) {
+                errorLabel.setText((String) in.getData());
+                return;
+            }
+
+            FXMLUtils.loadNewView("views/home.fxml", usernameField.getScene());
+        } catch (SocketException e) {
+            FXMLUtils.loadNewView("views/no-connection.fxml", usernameField.getScene());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException ignored) {}
     }
 }

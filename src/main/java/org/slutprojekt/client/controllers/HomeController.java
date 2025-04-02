@@ -29,11 +29,7 @@ public class HomeController {
                 FXMLUtils.loadNewView("views/no-connection.fxml", label.getScene());
             }
         } catch (SocketException e) {
-            try {
                 FXMLUtils.loadNewView("views/no-connection.fxml", label.getScene());
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (ClassNotFoundException ignored) {}

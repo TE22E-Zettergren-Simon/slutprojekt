@@ -24,10 +24,6 @@ public class NoConnectionController {
             return;
         }
 
-        try {
-            FXMLUtils.loadNewView("views/home.fxml", infoLabel.getScene());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        FXMLUtils.loadNewView("views/start.fxml", infoLabel.getScene());
     }
 }

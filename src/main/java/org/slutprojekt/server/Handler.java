@@ -94,8 +94,9 @@ public class Handler implements Runnable {
 
         // Login to the user
         //TODO: id should not always be zero, correct implementation when real db exists
+        System.out.println("Logged in a user");
         user = new User(0, loginForm.getUsername());
-        return new Message<>("ok", null);
+        return new Message<>("ok", "");
     }
 
     // Create a new user in the db and log into it
@@ -119,7 +120,8 @@ public class Handler implements Runnable {
         mockDB.put(signupForm.getUsername(), passwordHash);
 
         // Login to the user
+        System.out.println("Signed up a new user");
         user = new User(0, signupForm.getUsername());
-        return new Message<>("ok", null);
+        return new Message<>("ok", "");
     }
 }
