@@ -13,7 +13,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 
 public class Handler implements Runnable {
     private SocketConnection socketConnection;
@@ -88,7 +87,7 @@ public class Handler implements Runnable {
             Statement statement = dbConnection.createStatement();
 
             // DB must contain the user that is being logged in to
-            ResultSet results = statement.executeQuery("SELECT PasswordHash FROM Users WHERE Username = '" + loginForm.getUsername() + "';");
+            ResultSet results = statement.executeQuery("SELECT UserID, PasswordHash FROM Users WHERE Username = '" + loginForm.getUsername() + "';");
             if (!results.next()) {
                 return new Message<>("error", "Username not found");
             }
@@ -101,9 +100,8 @@ public class Handler implements Runnable {
             }
 
             // Login to the user
-            //TODO: id should not always be zero, correct implementation when real db exists
             System.out.println("Logged in a user");
-            user = new User(0, loginForm.getUsername());
+            user = new User(results.getInt("UserID"), loginForm.getUsername());
             return new Message<>("ok", "");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -140,9 +138,13 @@ public class Handler implements Runnable {
             String passwordHash = BCrypt.withDefaults().hashToString(12, signupForm.getPassword().toCharArray());
             statement.execute("INSERT INTO Users(Username, PasswordHash) VALUES('" + signupForm.getUsername() + "', '" + passwordHash + "');");
 
+            // Get the id of the newly created user
+            results = statement.executeQuery("SELECT UserID FROM Users WHERE Username = '" + signupForm.getUsername() + "';");
+            results.next();
+
             // Login to the user
             System.out.println("Signed up a new user");
-            user = new User(0, signupForm.getUsername());
+            user = new User(results.getInt("UserID"), signupForm.getUsername());
             return new Message<>("ok", "");
         } catch (SQLException e) {
             e.printStackTrace();
