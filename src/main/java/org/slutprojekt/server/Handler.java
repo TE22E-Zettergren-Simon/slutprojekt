@@ -13,15 +13,18 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Set;
 
 public class Handler implements Runnable {
     private SocketConnection socketConnection;
     private Connection dbConnection;
     private User user;
+    Set<String> currentUsers;
 
-    public Handler(Socket socket, Connection dbConnection) throws IOException {
+    public Handler(Socket socket, Connection dbConnection, Set<String> currentUsers) throws IOException {
         socketConnection = new SocketConnection(socket);
         this.dbConnection = dbConnection;
+        this.currentUsers = currentUsers;
     }
 
     @Override
@@ -54,18 +57,10 @@ public class Handler implements Runnable {
                         socketConnection.write(out);
                         break;
                 }
-
-                // old stuff, might be wanted for testing
-                //if (message.getMessage().equalsIgnoreCase("exit")) {
-                //    socketConnection.close();
-                //    System.out.println("A client disconnected");
-                //    break;
-                //}
-                //socketConnection.write(message);
-                //System.out.println("Echoed: " + message.getMessage());
             }
         } catch (SocketException e) {
-            System.out.println("Lost connection to a client");
+            currentUsers.remove(user.getUsername());
+            System.out.println("A client disconnected");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -75,12 +70,16 @@ public class Handler implements Runnable {
     // Fails if loginForm is empty, the user doesn't exist, the password is wrong or the user currently is in use
     // If it fails an error message is returned
     // If successful an ok is returned
-    //TODO: make sure the user isn't currently logged in
     private Message<String> login(LoginForm loginForm) {
         // Username and password must exist
         if (loginForm.getUsername() == null || loginForm.getPassword() == null ||
                 loginForm.getUsername().isBlank() || loginForm.getPassword().isBlank()) {
             return new Message<>("error", "Username and password are required");
+        }
+
+        // User cannot be logged in already
+        if (currentUsers.contains(loginForm.getUsername())) {
+            return new Message<>("error", "That account is currently being used");
         }
 
         try {
@@ -102,6 +101,7 @@ public class Handler implements Runnable {
             // Login to the user
             System.out.println("Logged in a user");
             user = new User(results.getInt("UserID"), loginForm.getUsername());
+            currentUsers.add(loginForm.getUsername());
             return new Message<>("ok", "");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -145,6 +145,7 @@ public class Handler implements Runnable {
             // Login to the user
             System.out.println("Signed up a new user");
             user = new User(results.getInt("UserID"), signupForm.getUsername());
+            currentUsers.add(signupForm.getUsername());
             return new Message<>("ok", "");
         } catch (SQLException e) {
             e.printStackTrace();
