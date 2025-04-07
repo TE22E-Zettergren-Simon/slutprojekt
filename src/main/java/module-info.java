@@ -9,8 +9,8 @@ module org.slutprojekt {
     opens org.slutprojekt.client to javafx.fxml;
     exports org.slutprojekt.client;
 
-    // opens org.slutprojekt.client.components to javafx.fxml;
-    // exports org.slutprojekt.client.components;
+    opens org.slutprojekt.client.components to javafx.fxml;
+    exports org.slutprojekt.client.components;
 
     opens org.slutprojekt.client.controllers to javafx.fxml;
     exports org.slutprojekt.client.controllers;

@@ -1,37 +1,32 @@
 package org.slutprojekt.client.controllers;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import org.slutprojekt.client.ConnectionHolder;
-import org.slutprojekt.client.FXMLUtils;
-import org.slutprojekt.shared.models.Message;
-
-import java.io.IOException;
-import java.net.SocketException;
+import org.slutprojekt.client.components.Feed;
+import org.slutprojekt.client.components.LongPostComponent;
+import org.slutprojekt.client.components.PostComponent;
+import org.slutprojekt.client.components.ShortPostComponent;
+import org.slutprojekt.shared.models.LongPost;
+import org.slutprojekt.shared.models.ShortPost;
+import org.slutprojekt.shared.models.User;
 
 public class HomeController {
     @FXML
-    private Label label;
-    @FXML
-    private TextField textField;
+    private Feed<PostComponent> feed;
 
     @FXML
-    private void submit() {
-        String text = textField.getText();
-        Message messageOut = new Message(text, null);
-        try {
-            ConnectionHolder.getInstance().getSocketConnection().write(messageOut);
-            if (!text.equalsIgnoreCase("exit")) {
-                Message messageIn = ConnectionHolder.getInstance().getSocketConnection().read();
-                label.setText(messageIn.getMessage());
-            } else {
-                FXMLUtils.loadNewView("views/no-connection.fxml", label.getScene());
-            }
-        } catch (SocketException e) {
-                FXMLUtils.loadNewView("views/no-connection.fxml", label.getScene());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException ignored) {}
+    private void initialize() {
+        //feed.setMaxWidth(300.0);
+        //TODO: Get data from the server
+        feed.addTop(new ShortPostComponent(new ShortPost(
+                0,
+                new User(0, "Simon"),
+                "Something profound"
+        )));
+        feed.addTop(new LongPostComponent(new LongPost(
+                1,
+                new User(1, "Internet user"),
+                "Something brave",
+                "A bunch of stuff, blah blah blah blah blah blah blah"
+        )));
     }
 }

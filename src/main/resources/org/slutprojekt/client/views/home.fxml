@@ -6,12 +6,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import org.slutprojekt.client.components.Feed?>
 <VBox xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.slutprojekt.client.controllers.HomeController"
-            prefHeight="400.0" prefWidth="600.0"
-            spacing="15.0" alignment="CENTER">
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.slutprojekt.client.controllers.HomeController"
+      prefHeight="400.0" prefWidth="600.0"
+      stylesheets="@../styles/global.css"
+      spacing="15.0" alignment="TOP_CENTER">
 
-    <TextField fx:id="textField" onAction="#submit"/>
-    <Label fx:id="label"/>
+    <Feed fx:id="feed"/>
 </VBox>
