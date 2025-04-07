@@ -4,7 +4,7 @@ Feed {
     -fx-border-color: #BBBBBB;
 }
 
-ShortPostComponent, LongPostComponent {
+CommentComponent, LongPostComponent, ShortPostComponent {
     -fx-border-width: 0 0 1px 0;
     -fx-border-color: #BBBBBB;
 }

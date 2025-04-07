@@ -16,4 +16,8 @@ public class LongPostComponent extends PostComponent {
         Label infoLabel = new Label("See more... ");
         getChildren().add(infoLabel);
     }
+
+    public void extend() {
+        ((Label) getChildren().getLast()).setText(post.getBody());
+    }
 }

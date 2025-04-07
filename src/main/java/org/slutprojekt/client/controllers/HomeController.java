@@ -15,7 +15,6 @@ public class HomeController {
 
     @FXML
     private void initialize() {
-        //feed.setMaxWidth(300.0);
         //TODO: Get data from the server
         feed.addTop(new ShortPostComponent(new ShortPost(
                 0,

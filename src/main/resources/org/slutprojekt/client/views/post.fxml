@@ -7,12 +7,15 @@
 <?import javafx.scene.layout.*?>
 
 <?import org.slutprojekt.client.components.Feed?>
+<?import org.slutprojekt.client.components.PostComponent?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="org.slutprojekt.client.controllers.HomeController"
+      fx:controller="org.slutprojekt.client.controllers.PostController"
       prefHeight="400.0" prefWidth="600.0"
       stylesheets="@../styles/global.css"
-      alignment="TOP_CENTER">
+      alignment="TOP_CENTER"
+      fx:id="root">
 
+    <!-- There is also a PostComponent here, but it is added in the controller -->
     <Feed fx:id="feed"/>
 </VBox>
