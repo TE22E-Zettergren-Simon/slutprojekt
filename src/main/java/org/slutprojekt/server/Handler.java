@@ -33,36 +33,33 @@ public class Handler implements Runnable {
             // Wait for a message to arrive, handle it, repeat
             while (true) {
                 Message in = socketConnection.read();
-                Message out;
-                // Check the command and verify the provided data
-                switch (in.getMessage()) {
-                    case "login":
-                        if (in.getData() instanceof LoginForm) {
-                            out = login((LoginForm) in.getData());
-                        } else {
-                            out = new Message<>("error", "Wrong datatype for the command");
-                        }
-                        socketConnection.write(out);
-                        break;
-                    case "signup":
-                        if (in.getData() instanceof LoginForm) {
-                            out = signup((LoginForm) in.getData());
-                        } else {
-                            out = new Message<>("error", "Wrong datatype for the command");
-                        }
-                        socketConnection.write(out);
-                        break;
-                    default:
-                        out = new Message<>("error", "Unknown command");
-                        socketConnection.write(out);
-                        break;
-                }
+                Message out = handleMessageIn(in);
+                socketConnection.write(out);
             }
         } catch (SocketException e) {
             currentUsers.remove(user.getUsername());
             System.out.println("A client disconnected");
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private Message handleMessageIn(Message in) {
+        // The message must exist
+        if (in == null) {
+            return new Message<>("error", "The message in is null");
+        }
+
+        try {
+            // Do the relevant logic dependent on the command
+            return switch (in.getMessage()) {
+                case "login" -> login((LoginForm) in.getData());
+                case "signup" -> signup((LoginForm) in.getData());
+                default -> new Message<>("error", "Unknown command");
+            };
+        } catch (ClassCastException e) {
+            // If the data could not be cast to the needed datatype, an error is returned
+            return new Message<>("error", "Wrong datatype for the command");
         }
     }
 
