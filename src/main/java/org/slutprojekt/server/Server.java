@@ -33,6 +33,12 @@ public class Server implements AutoCloseable {
                 + "UserID INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "Username VARCHAR(20) NOT NULL,"
                 + "PasswordHash VARCHAR(64) NOT NULL);");
+        statement.execute("CREATE TABLE IF NOT EXISTS Posts ("
+                + "PostID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "Header VARCHAR(200) NOT NULL,"
+                + "Body VARCHAR(2000) NOT NULL,"
+                + "UserID INTEGER NOT NULL,"
+                + "FOREIGN KEY (UserID) REFERENCES Users(UserID));");
 
         // Create and start the server
         serverSocket.bind(new InetSocketAddress("127.0.0.1", 8080));

@@ -2,9 +2,7 @@ package org.slutprojekt.server;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import org.slutprojekt.shared.SocketConnection;
-import org.slutprojekt.shared.models.LoginForm;
-import org.slutprojekt.shared.models.Message;
-import org.slutprojekt.shared.models.User;
+import org.slutprojekt.shared.models.*;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -13,6 +11,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Set;
 
 public class Handler implements Runnable {
@@ -37,7 +36,9 @@ public class Handler implements Runnable {
                 socketConnection.write(out);
             }
         } catch (SocketException e) {
-            currentUsers.remove(user.getUsername());
+            if (user != null) {
+                currentUsers.remove(user.getUsername());
+            }
             System.out.println("A client disconnected");
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -55,6 +56,7 @@ public class Handler implements Runnable {
             return switch (in.getMessage()) {
                 case "login" -> login((LoginForm) in.getData());
                 case "signup" -> signup((LoginForm) in.getData());
+                case "get feed" -> getFeed();
                 default -> new Message<>("error", "Unknown command");
             };
         } catch (ClassCastException e) {
@@ -144,6 +146,41 @@ public class Handler implements Runnable {
             user = new User(results.getInt("UserID"), signupForm.getUsername());
             currentUsers.add(signupForm.getUsername());
             return new Message<>("ok", "");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new Message<>("error", "A database error occurred");
+        }
+    }
+
+    // Gets all posts in the feed
+    // Fails if the database fails
+    private Message getFeed() {
+        try  {
+            // Get posts from db
+            Statement statement = dbConnection.createStatement();
+            ResultSet results = statement.executeQuery("SELECT * FROM Posts;");
+
+            // Create an array of posts to send back to the user
+            ArrayList<Post> posts = new ArrayList<>();
+            while (results.next()) {
+                // The creator is needed
+                int creatorID = results.getInt("UserID");
+                ResultSet userResults = statement.executeQuery("SELECT * FROM Users WHERE UserID = " + creatorID);
+                User user = new User(creatorID, userResults.getString("Username"));
+
+                // Get the data from the post
+                int postID = results.getInt("PostID");
+                String header = results.getString("Header");
+                String body = results.getString("Body");
+
+                // Differentiate between short and long posts, the body part only exists in long posts
+                if (body == null || body.isBlank()) {
+                    posts.add(new ShortPost(postID, user, header));
+                } else {
+                    posts.add(new LongPost(postID, user, header, body));
+                }
+            }
+            return new Message<>("ok", posts);
         } catch (SQLException e) {
             e.printStackTrace();
             return new Message<>("error", "A database error occurred");
