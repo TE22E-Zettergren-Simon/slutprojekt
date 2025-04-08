@@ -2,6 +2,7 @@ package org.slutprojekt.client.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
+import org.slutprojekt.client.FXMLUtils;
 import org.slutprojekt.client.components.CommentComponent;
 import org.slutprojekt.client.components.Feed;
 import org.slutprojekt.client.components.LongPostComponent;
@@ -26,9 +27,8 @@ public class PostController {
         ));
         if (post instanceof LongPostComponent) {
             ((LongPostComponent) post).extend();
-            System.out.println("Doing stuff");
         }
-        root.getChildren().addFirst(post);
+        root.getChildren().add(1, post);
 
         User user = new User(0, "Somebody");
         feed.addTop(new CommentComponent(new Comment(
@@ -37,5 +37,10 @@ public class PostController {
                 new ShortPost(0, user, "Something"),
                 "Comment at post " + CurrentPostHolder.getInstance().getPostID()
         )));
+    }
+
+    @FXML
+    private void toHomeScreen() {
+        FXMLUtils.loadNewView("views/home.fxml", root.getScene());
     }
 }

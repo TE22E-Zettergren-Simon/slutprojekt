@@ -16,6 +16,7 @@
       alignment="TOP_CENTER"
       fx:id="root">
 
+    <Button onAction="#toHomeScreen" text="Go back"/>
     <!-- There is also a PostComponent here, but it is added in the controller -->
     <Feed fx:id="feed"/>
 </VBox>
