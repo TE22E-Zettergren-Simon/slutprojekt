@@ -14,4 +14,6 @@ module org.slutprojekt {
 
     opens org.slutprojekt.client.controllers to javafx.fxml;
     exports org.slutprojekt.client.controllers;
+    exports org.slutprojekt.client.state;
+    opens org.slutprojekt.client.state to javafx.fxml;
 }

@@ -2,7 +2,7 @@ package org.slutprojekt.client.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import org.slutprojekt.client.ConnectionHolder;
+import org.slutprojekt.client.state.ConnectionHolder;
 import org.slutprojekt.client.FXMLUtils;
 
 import java.io.IOException;

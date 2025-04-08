@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import org.slutprojekt.client.ConnectionHolder;
+import org.slutprojekt.client.state.ConnectionHolder;
 import org.slutprojekt.client.FXMLUtils;
 import org.slutprojekt.shared.models.LoginForm;
 import org.slutprojekt.shared.models.Message;

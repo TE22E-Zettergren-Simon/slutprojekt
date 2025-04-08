@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.slutprojekt.client.state.ConnectionHolder;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;

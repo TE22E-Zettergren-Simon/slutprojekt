@@ -1,4 +1,4 @@
-package org.slutprojekt.client;
+package org.slutprojekt.client.state;
 
 import org.slutprojekt.shared.SocketConnection;
 

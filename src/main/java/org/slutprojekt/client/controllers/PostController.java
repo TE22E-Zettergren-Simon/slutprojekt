@@ -6,6 +6,7 @@ import org.slutprojekt.client.components.CommentComponent;
 import org.slutprojekt.client.components.Feed;
 import org.slutprojekt.client.components.LongPostComponent;
 import org.slutprojekt.client.components.PostComponent;
+import org.slutprojekt.client.state.CurrentPostHolder;
 import org.slutprojekt.shared.models.*;
 
 public class PostController {
@@ -17,7 +18,6 @@ public class PostController {
     @FXML
     private void initialize() {
         //TODO: Get data from server
-        //TODO: Get the specific post from some state, not always the same
         PostComponent post = new LongPostComponent(new LongPost(
                 1,
                 new User(1, "Internet user"),
@@ -35,7 +35,7 @@ public class PostController {
                 0,
                 user,
                 new ShortPost(0, user, "Something"),
-                "Yep, checks out"
+                "Comment at post " + CurrentPostHolder.getInstance().getPostID()
         )));
     }
 }
