@@ -7,10 +7,14 @@ public class ShortPostComponent extends PostComponent {
     private ShortPost post;
 
     public ShortPostComponent(ShortPost post) {
-        super(post.getCreator(), post.getId());
+        super(post);
         this.post = post;
 
         Label contentLabel = new Label(post.getContent());
         getChildren().add(contentLabel);
+    }
+
+    @Override
+    public void extend() {
     }
 }

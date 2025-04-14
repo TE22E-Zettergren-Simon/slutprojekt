@@ -2,16 +2,17 @@ package org.slutprojekt.client.components;
 
 import org.slutprojekt.client.FXMLUtils;
 import org.slutprojekt.client.state.CurrentPostHolder;
-import org.slutprojekt.shared.models.User;
+import org.slutprojekt.shared.models.Post;
 
 public abstract class PostComponent extends ContentComponent {
-    public PostComponent(User creator, int postID) {
-        super(creator);
+    public PostComponent(Post post) {
+        super(post.getCreator());
 
-        //TODO: Go to a new view where the post and comments are displayed
         setOnMouseClicked(e -> {
-            CurrentPostHolder.getInstance().setPostID(postID);
+            CurrentPostHolder.getInstance().setPost(post);
             FXMLUtils.loadNewView("views/post.fxml", getScene());
         });
     }
+
+    public void extend() {}
 }

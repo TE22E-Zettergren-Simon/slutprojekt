@@ -7,7 +7,7 @@ public class LongPostComponent extends PostComponent {
     private LongPost post;
 
     public LongPostComponent(LongPost post) {
-        super(post.getCreator(), post.getId());
+        super(post);
         this.post = post;
 
         Label headingLabel = new Label(post.getHeading());
@@ -17,6 +17,7 @@ public class LongPostComponent extends PostComponent {
         getChildren().add(infoLabel);
     }
 
+    @Override
     public void extend() {
         ((Label) getChildren().getLast()).setText(post.getBody());
     }

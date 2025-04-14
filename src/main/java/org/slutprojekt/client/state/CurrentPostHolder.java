@@ -1,8 +1,10 @@
 package org.slutprojekt.client.state;
 
+import org.slutprojekt.shared.models.Post;
+
 public class CurrentPostHolder {
     private static CurrentPostHolder instance = new CurrentPostHolder();
-    private int postID;
+    private Post post;
 
     private CurrentPostHolder() {}
 
@@ -10,11 +12,11 @@ public class CurrentPostHolder {
         return instance;
     }
 
-    public int getPostID() {
-        return postID;
+    public Post getPost() {
+        return post;
     }
 
-    public void setPostID(int postID) {
-        this.postID = postID;
+    public void setPost(Post post) {
+        this.post = post;
     }
 }

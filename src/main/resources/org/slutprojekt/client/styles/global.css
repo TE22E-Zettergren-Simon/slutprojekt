@@ -1,3 +1,7 @@
+* {
+    -fx-wrap-text: true;
+}
+
 Feed {
     -fx-max-width: 300px;
     -fx-border-width: 0 1px;
