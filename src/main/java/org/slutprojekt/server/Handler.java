@@ -157,15 +157,16 @@ public class Handler implements Runnable {
     private Message getFeed() {
         try  {
             // Get posts from db
-            Statement statement = dbConnection.createStatement();
-            ResultSet results = statement.executeQuery("SELECT * FROM Posts;");
+            Statement postStatement = dbConnection.createStatement();
+            ResultSet results = postStatement.executeQuery("SELECT * FROM Posts;");
 
             // Create an array of posts to send back to the user
             ArrayList<Post> posts = new ArrayList<>();
             while (results.next()) {
                 // The creator is needed
                 int creatorID = results.getInt("UserID");
-                ResultSet userResults = statement.executeQuery("SELECT * FROM Users WHERE UserID = " + creatorID);
+                Statement userStatement = dbConnection.createStatement();
+                ResultSet userResults = userStatement.executeQuery("SELECT * FROM Users WHERE UserID = " + creatorID);
                 User user = new User(creatorID, userResults.getString("Username"));
 
                 // Get the data from the post
@@ -174,7 +175,7 @@ public class Handler implements Runnable {
                 String body = results.getString("Body");
 
                 // Differentiate between short and long posts, the body part only exists in long posts
-                if (body == null || body.isBlank()) {
+                if (body == null) {
                     posts.add(new ShortPost(postID, user, header));
                 } else {
                     posts.add(new LongPost(postID, user, header, body));

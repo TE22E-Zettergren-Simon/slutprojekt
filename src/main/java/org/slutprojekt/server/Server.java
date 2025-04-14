@@ -35,8 +35,8 @@ public class Server implements AutoCloseable {
                 + "PasswordHash VARCHAR(64) NOT NULL);");
         statement.execute("CREATE TABLE IF NOT EXISTS Posts ("
                 + "PostID INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + "Header VARCHAR(200) NOT NULL,"
-                + "Body VARCHAR(2000) NOT NULL,"
+                + "Header VARCHAR(300) NOT NULL,"
+                + "Body VARCHAR(2000),"
                 + "UserID INTEGER NOT NULL,"
                 + "FOREIGN KEY (UserID) REFERENCES Users(UserID));");
 

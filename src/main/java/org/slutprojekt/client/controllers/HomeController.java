@@ -1,13 +1,17 @@
 package org.slutprojekt.client.controllers;
 
 import javafx.fxml.FXML;
+import org.slutprojekt.client.FXMLUtils;
 import org.slutprojekt.client.components.Feed;
 import org.slutprojekt.client.components.LongPostComponent;
 import org.slutprojekt.client.components.PostComponent;
 import org.slutprojekt.client.components.ShortPostComponent;
-import org.slutprojekt.shared.models.LongPost;
-import org.slutprojekt.shared.models.ShortPost;
-import org.slutprojekt.shared.models.User;
+import org.slutprojekt.client.state.ConnectionHolder;
+import org.slutprojekt.shared.models.*;
+
+import java.io.IOException;
+import java.net.SocketException;
+import java.util.ArrayList;
 
 public class HomeController {
     @FXML
@@ -15,17 +19,30 @@ public class HomeController {
 
     @FXML
     private void initialize() {
-        //TODO: Get data from the server
-        feed.addTop(new ShortPostComponent(new ShortPost(
-                0,
-                new User(0, "Simon"),
-                "Something profound"
-        )));
-        feed.addTop(new LongPostComponent(new LongPost(
-                1,
-                new User(1, "Internet user"),
-                "Something brave",
-                "A bunch of stuff, blah blah blah blah blah blah blah"
-        )));
+        try {
+            Message out = new Message("get feed", null);
+            ConnectionHolder.getInstance().getSocketConnection().write(out);
+            Message in = ConnectionHolder.getInstance().getSocketConnection().read();
+
+            if (in == null) {
+                return;
+            }
+            if (!(in.getData() instanceof ArrayList)) {
+                System.out.println(in.getData());
+                return;
+            }
+
+            for (Post post: (ArrayList<Post>) in.getData()) {
+                if (post instanceof ShortPost) {
+                    feed.addTop(new ShortPostComponent((ShortPost) post));
+                } else {
+                    feed.addTop(new LongPostComponent((LongPost) post));
+                }
+            }
+        } catch (SocketException e) {
+            FXMLUtils.loadNewView("views/no-connection.fxml", feed.getScene());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException ignored) {}
     }
 }
