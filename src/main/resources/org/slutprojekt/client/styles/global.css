@@ -6,6 +6,8 @@ Feed {
     -fx-max-width: 300px;
     -fx-border-width: 0 1px;
     -fx-border-color: #BBBBBB;
+    -fx-fit-to-width: true;
+    -fx-hbar-policy: never;
 }
 
 CommentComponent, LongPostComponent, ShortPostComponent {
