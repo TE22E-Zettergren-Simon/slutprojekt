@@ -11,23 +11,15 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Server implements AutoCloseable {
-    private ExecutorService pool = Executors.newFixedThreadPool(20);
-    private ServerSocket serverSocket;
-    private Connection dbConnection;
-    private Set<String> currentUsers;
+public class Server {
+    public Server(String host, int port, String dburl) throws Exception {
+        ExecutorService pool = Executors.newFixedThreadPool(20);
+        Set<String> currentUsers = Collections.synchronizedSet(new HashSet<>());
 
-    public Server() throws IOException {
-        serverSocket = new ServerSocket();
-        currentUsers = Collections.synchronizedSet(new HashSet<>());
-    }
-
-    public void run() throws Exception {
         // Connect to database
-        String dburl = "jdbc:sqlite:db.db";
-        dbConnection = DriverManager.getConnection(dburl);
+        Connection dbConnection = DriverManager.getConnection(dburl);
 
-        // Create the Users table if it doesn't exist
+        // Create the Users, Posts and Comments table if it doesn't exist
         Statement statement = dbConnection.createStatement();
         statement.execute("CREATE TABLE IF NOT EXISTS Users ("
                 + "UserID INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -39,9 +31,17 @@ public class Server implements AutoCloseable {
                 + "Body VARCHAR(2000),"
                 + "UserID INTEGER NOT NULL,"
                 + "FOREIGN KEY (UserID) REFERENCES Users(UserID));");
+        statement.execute("CREATE TABLE IF NOT EXISTS Comments ("
+                + "CommentID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "Content VARCHAR(300) NOT NULL,"
+                + "UserID INTEGER NOT NULL,"
+                + "PostID INTEGER NOT NULL,"
+                + "FOREIGN KEY (UserID) REFERENCES Users(UserID)"
+                + "FOREIGN KEY (PostID) REFERENCES Posts(PostID));");
 
         // Create and start the server
-        serverSocket.bind(new InetSocketAddress("127.0.0.1", 8080));
+        ServerSocket serverSocket = new ServerSocket();
+        serverSocket.bind(new InetSocketAddress(host, port));
         System.out.println("Server started");
 
         // Continuously accept clients and dispatch threads to handle them
@@ -50,10 +50,5 @@ public class Server implements AutoCloseable {
             pool.execute(new Handler(socket, dbConnection, currentUsers));
             System.out.println("Connected with a client");
         }
-    }
-
-    public void close() throws IOException {
-        serverSocket.close();
-        pool.shutdown();
     }
 }

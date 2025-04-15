@@ -57,6 +57,7 @@ public class Handler implements Runnable {
                 case "login" -> login((LoginForm) in.getData());
                 case "signup" -> signup((LoginForm) in.getData());
                 case "get feed" -> getFeed();
+                case "get comments" -> getComments((Post) in.getData());
                 default -> new Message<>("error", "Unknown command");
             };
         } catch (ClassCastException e) {
@@ -164,24 +165,54 @@ public class Handler implements Runnable {
             ArrayList<Post> posts = new ArrayList<>();
             while (results.next()) {
                 // The creator is needed
-                int creatorID = results.getInt("UserID");
+                int creatorId = results.getInt("UserID");
                 Statement userStatement = dbConnection.createStatement();
-                ResultSet userResults = userStatement.executeQuery("SELECT * FROM Users WHERE UserID = " + creatorID);
-                User user = new User(creatorID, userResults.getString("Username"));
+                ResultSet userResults = userStatement.executeQuery("SELECT * FROM Users WHERE UserID = " + creatorId);
+                User creator = new User(creatorId, userResults.getString("Username"));
 
                 // Get the data from the post
-                int postID = results.getInt("PostID");
+                int postId = results.getInt("PostID");
                 String header = results.getString("Header");
                 String body = results.getString("Body");
 
                 // Differentiate between short and long posts, the body part only exists in long posts
                 if (body == null) {
-                    posts.add(new ShortPost(postID, user, header));
+                    posts.add(new ShortPost(postId, creator, header));
                 } else {
-                    posts.add(new LongPost(postID, user, header, body));
+                    posts.add(new LongPost(postId, creator, header, body));
                 }
             }
             return new Message<>("ok", posts);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new Message<>("error", "A database error occurred");
+        }
+    }
+
+    // Gets the comments at the provided post id
+    // Fails if the database fails
+    private Message getComments(Post post) {
+        try {
+            // Get comments
+            Statement commentStatement = dbConnection.createStatement();
+            ResultSet results = commentStatement.executeQuery("SELECT * FROM Comments WHERE PostID = " + post.getId());
+
+            // Create an array of comments to send back
+            ArrayList<Comment> comments = new ArrayList<>();
+            while (results.next()) {
+                // Get the creator's name
+                int creatorId = results.getInt("UserID");
+                Statement userStatement = dbConnection.createStatement();
+                ResultSet userResults = userStatement.executeQuery("SELECT * FROM Users WHERE UserID = " + creatorId);
+                User creator = new User(creatorId, userResults.getString("Username"));
+
+                // Get all the comment's data
+                int commentId = results.getInt("CommentID");
+                String content = results.getString("Content");
+
+                comments.add(new Comment(commentId, creator, post, content));
+            }
+            return new Message<>("ok", comments);
         } catch (SQLException e) {
             e.printStackTrace();
             return new Message<>("error", "A database error occurred");
