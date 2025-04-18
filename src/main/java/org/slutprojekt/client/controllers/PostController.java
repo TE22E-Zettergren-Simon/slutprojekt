@@ -18,10 +18,12 @@ public class PostController {
     @FXML
     private Feed<CommentComponent> feed;
 
+    private Post post;
+
     @FXML
     private void initialize() {
         // Get the current post and show it
-        Post post = CurrentPostHolder.getInstance().getPost();
+        post = CurrentPostHolder.getInstance().getPost();
         PostComponent postComponent;
         if (post instanceof LongPost) {
             postComponent = new LongPostComponent((LongPost) post);
@@ -29,14 +31,27 @@ public class PostController {
             postComponent = new ShortPostComponent((ShortPost) post);
         }
         postComponent.extend();
-        root.getChildren().add(1, postComponent);
+        root.getChildren().add(2, postComponent);
 
-        // Get the post's comments
+        reload();
+    }
+
+    @FXML
+    private void toHomeScreen() {
+        FXMLUtils.loadNewView("views/home.fxml", root.getScene());
+    }
+
+    // Empties the feed of comments and gets the newest comments from the server
+    @FXML
+    private void reload() {
+        feed.clear();
         try {
+            // Get the post's comments
             Message<Post> out = new Message<>("get comments", post);
             ConnectionHolder.getInstance().getSocketConnection().write(out);
             Message in = ConnectionHolder.getInstance().getSocketConnection().read();
 
+            // Verify the comments
             //TODO: Better error handling, write something to the user in the window
             if (in == null) {
                 return;
@@ -56,10 +71,5 @@ public class PostController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @FXML
-    private void toHomeScreen() {
-        FXMLUtils.loadNewView("views/home.fxml", root.getScene());
     }
 }

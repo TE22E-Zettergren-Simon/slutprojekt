@@ -17,6 +17,7 @@
       fx:id="root">
 
     <Button onAction="#toHomeScreen" text="Go back"/>
+    <Button onAction="#reload" text="Reload"/>
     <!-- There is also a PostComponent here, but it is added in the controller -->
     <Feed fx:id="feed"/>
 </VBox>

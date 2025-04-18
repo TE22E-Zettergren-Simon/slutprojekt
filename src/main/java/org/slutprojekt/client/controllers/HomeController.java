@@ -19,11 +19,20 @@ public class HomeController {
 
     @FXML
     private void initialize() {
+        reload();
+    }
+
+    // Empties the feed and queries the server for the newest feed
+    @FXML
+    private void reload() {
+        feed.clear();
         try {
+            // Get the feed
             Message out = new Message("get feed", null);
             ConnectionHolder.getInstance().getSocketConnection().write(out);
             Message in = ConnectionHolder.getInstance().getSocketConnection().read();
 
+            // Verify the data
             if (in == null) {
                 return;
             }
@@ -32,6 +41,7 @@ public class HomeController {
                 return;
             }
 
+            // Add the posts
             for (Post post: (ArrayList<Post>) in.getData()) {
                 if (post instanceof ShortPost) {
                     feed.addTop(new ShortPostComponent((ShortPost) post));
@@ -41,8 +51,8 @@ public class HomeController {
             }
         } catch (SocketException e) {
             FXMLUtils.loadNewView("views/no-connection.fxml", feed.getScene());
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
-        } catch (ClassNotFoundException ignored) {}
+        }
     }
 }
