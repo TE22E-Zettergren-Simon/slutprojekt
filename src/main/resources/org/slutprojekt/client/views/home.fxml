@@ -14,6 +14,7 @@
       stylesheets="@../styles/global.css"
       alignment="TOP_CENTER">
 
+    <Button onAction="#logout" text="Logout"/>
     <Button onAction="#reload" text="Reload"/>
     <Feed fx:id="feed"/>
 </VBox>

@@ -22,6 +22,31 @@ public class HomeController {
         reload();
     }
 
+    @FXML
+    private void logout() {
+        try {
+            // Try to log out
+            Message out = new Message("logout", null);
+            ConnectionHolder.getInstance().getSocketConnection().write(out);
+            Message in = ConnectionHolder.getInstance().getSocketConnection().read();
+
+            // If logging out went wrong, do nothing
+            if (in == null) {
+                return;
+            }
+            if (in.getMessage().equals("error")) {
+                return;
+            }
+
+            // Otherwise, go to start screen
+            FXMLUtils.loadNewView("views/start.fxml", feed.getScene());
+        } catch (SocketException e) {
+            FXMLUtils.loadNewView("views/no-connection.fxml", feed.getScene());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     // Empties the feed and queries the server for the newest feed
     @FXML
     private void reload() {

@@ -56,6 +56,7 @@ public class Handler implements Runnable {
             return switch (in.getMessage()) {
                 case "login" -> login((LoginForm) in.getData());
                 case "signup" -> signup((LoginForm) in.getData());
+                case "logout" -> logout();
                 case "get feed" -> getFeed();
                 case "get comments" -> getComments((Post) in.getData());
                 default -> new Message<>("error", "Unknown command");
@@ -151,6 +152,20 @@ public class Handler implements Runnable {
             e.printStackTrace();
             return new Message<>("error", "A database error occurred");
         }
+    }
+
+    // Logout the user
+    // Fails if the user is not logged in already
+    private Message logout() {
+        if (user == null) {
+            return new Message<>("error", "You are not logged in");
+        }
+
+        currentUsers.remove(user.getUsername());
+        user = null;
+
+        System.out.println("logged out a user");
+        return new Message<>("ok", "");
     }
 
     // Gets all posts in the feed
