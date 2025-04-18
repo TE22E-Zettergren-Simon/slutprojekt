@@ -15,6 +15,7 @@
       alignment="TOP_CENTER">
 
     <Button onAction="#logout" text="Logout"/>
+    <Button onAction="#toCreatePost" text="Post something!"/>
     <Button onAction="#reload" text="Reload"/>
     <Feed fx:id="feed"/>
 </VBox>

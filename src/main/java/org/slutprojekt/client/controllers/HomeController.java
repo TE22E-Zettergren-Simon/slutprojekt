@@ -47,6 +47,11 @@ public class HomeController {
         }
     }
 
+    @FXML
+    private void toCreatePost() {
+        FXMLUtils.loadNewView("views/create-post.fxml", feed.getScene());
+    }
+
     // Empties the feed and queries the server for the newest feed
     @FXML
     private void reload() {
