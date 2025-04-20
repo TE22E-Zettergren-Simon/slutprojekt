@@ -58,6 +58,7 @@ public class Handler implements Runnable {
                 case "signup" -> signup((LoginForm) in.getData());
                 case "logout" -> logout();
                 case "create post" -> createPost((CreatePostForm) in.getData());
+                case "create comment" -> createComment((CreateCommentForm) in.getData());
                 case "get feed" -> getFeed();
                 case "get comments" -> getComments((Post) in.getData());
                 default -> new Message<>("error", "Unknown command");
@@ -171,7 +172,7 @@ public class Handler implements Runnable {
 
     // Creates a new post in the database
     // Fails if the user isn't logged in, the post has invalid data or the database fails
-    private Message createPost(CreatePostForm contents) {
+    private Message<String> createPost(CreatePostForm contents) {
         // The user needs to be logged in
         if (user == null) {
             return new Message<>("error", "You are not logged in");
@@ -190,6 +191,29 @@ public class Handler implements Runnable {
             } else { // Create a long post if a body is provided
                 statement.execute("INSERT INTO Posts(Header, Body, UserID) VALUES('" + contents.getHeader() + "', '" + contents.getBody() + "', '" + user.getId() + "');");
             }
+            return new Message<>("ok", "");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new Message<>("error", "A database error occurred");
+        }
+    }
+
+    // Creates a comment
+    // Fails if the user isn't logged in, there is no comment provided or the database unexpectedly fails
+    private Message<String> createComment(CreateCommentForm contents) {
+        // The user needs to be logged in
+        if (user == null) {
+            return new Message<>("error", "You are not logged in");
+        }
+
+        // There must be some contents to the comment
+        if (contents.getContent() == null || contents.getContent().isBlank()) {
+            return new Message<>("error", "No comment provided");
+        }
+
+        try {
+            Statement statement = dbConnection.createStatement();
+            statement.execute("INSERT INTO Comments(Content, UserID, PostID) VALUES('" + contents.getContent() + "', '" + user.getId() + "', '" + contents.getPostID() + "');");
             return new Message<>("ok", "");
         } catch (SQLException e) {
             e.printStackTrace();
