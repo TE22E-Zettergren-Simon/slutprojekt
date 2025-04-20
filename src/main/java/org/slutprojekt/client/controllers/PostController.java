@@ -78,8 +78,32 @@ public class PostController {
 
     @FXML
     private void submitComment() {
-        //TODO: Send comment to server
-        System.out.println("Your new comment: " + commentInput.getText());
+        // Don't send the comment if it is blank
+        //TODO: Better error handling
+        if (commentInput.getText().isBlank()) {
+            return;
+        }
+
+        try {
+            // Request to create the comment
+            Message<CreateCommentForm> out = new Message<>(
+                    "create comment",
+                    new CreateCommentForm(commentInput.getText(), post.getId())
+            );
+            ConnectionHolder.getInstance().getSocketConnection().write(out);
+            Message in = ConnectionHolder.getInstance().getSocketConnection().read();
+
+            // Verify data
+            //TODO: Better error handling
+            if (in == null || in.getMessage().equals("error")) {
+                System.out.println("failed to submit comment");
+                return;
+            }
+        } catch (SocketException e) {
+            FXMLUtils.loadNewView("views/no-connection.fxml", feed.getScene());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         reload();
     }
