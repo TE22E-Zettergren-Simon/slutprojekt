@@ -18,6 +18,13 @@
 
     <Button onAction="#toHomeScreen" text="Go back"/>
     <Button onAction="#reload" text="Reload"/>
+
     <!-- There is also a PostComponent here, but it is added in the controller -->
+
+    <HBox alignment="CENTER" spacing="5.0">
+        <TextField fx:id="commentInput" promptText="Write a comment"/>
+        <Button onAction="#submitComment" text="Submit"/>
+    </HBox>
+
     <Feed fx:id="feed"/>
 </VBox>

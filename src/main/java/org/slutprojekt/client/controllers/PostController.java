@@ -1,6 +1,7 @@
 package org.slutprojekt.client.controllers;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import org.slutprojekt.client.FXMLUtils;
 import org.slutprojekt.client.components.*;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 public class PostController {
     @FXML
     private VBox root;
+    @FXML
+    private TextField commentInput;
     @FXML
     private Feed<CommentComponent> feed;
 
@@ -71,5 +74,13 @@ public class PostController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @FXML
+    private void submitComment() {
+        //TODO: Send comment to server
+        System.out.println("Your new comment: " + commentInput.getText());
+
+        reload();
     }
 }
