@@ -57,6 +57,7 @@ public class Handler implements Runnable {
                 case "login" -> login((LoginForm) in.getData());
                 case "signup" -> signup((LoginForm) in.getData());
                 case "logout" -> logout();
+                case "create post" -> createPost((CreatePostForm) in.getData());
                 case "get feed" -> getFeed();
                 case "get comments" -> getComments((Post) in.getData());
                 default -> new Message<>("error", "Unknown command");
@@ -166,6 +167,34 @@ public class Handler implements Runnable {
 
         System.out.println("logged out a user");
         return new Message<>("ok", "");
+    }
+
+    // Creates a new post in the database
+    // Fails if the user isn't logged in, the post has invalid data or the database fails
+    private Message createPost(CreatePostForm contents) {
+        // The user needs to be logged in
+        if (user == null) {
+            return new Message<>("error", "You are not logged in");
+        }
+
+        // There must be a header to the post
+        if (contents.getHeader() == null || contents.getHeader().isBlank()) {
+            return new Message<>("error", "No header provided");
+        }
+
+        try {
+            Statement statement = dbConnection.createStatement();
+            // Create a short post without a body
+            if (contents.getBody() == null || contents.getBody().isBlank()) {
+                statement.execute("INSERT INTO Posts(Header, UserID) VALUES('" + contents.getHeader() + "', '" + user.getId() + "');");
+            } else { // Create a long post if a body is provided
+                statement.execute("INSERT INTO Posts(Header, Body, UserID) VALUES('" + contents.getHeader() + "', '" + contents.getBody() + "', '" + user.getId() + "');");
+            }
+            return new Message<>("ok", "");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new Message<>("error", "A database error occurred");
+        }
     }
 
     // Gets all posts in the feed
