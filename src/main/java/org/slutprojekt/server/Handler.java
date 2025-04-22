@@ -183,12 +183,22 @@ public class Handler implements Runnable {
             return new Message<>("error", "No header provided");
         }
 
+        // The header can max be 200 characters long
+        if (contents.getHeader().length() > 200) {
+            return new Message<>("error", "Header is too long, max 200");
+        }
+
         try {
             Statement statement = dbConnection.createStatement();
-            // Create a short post without a body
             if (contents.getBody() == null || contents.getBody().isBlank()) {
+                // Create a short post without a body
                 statement.execute("INSERT INTO Posts(Header, UserID) VALUES('" + contents.getHeader() + "', '" + user.getId() + "');");
-            } else { // Create a long post if a body is provided
+            } else {
+                // Create a long post if a body is provided
+                // Body cannot be more than 2000 characters
+                if (contents.getBody().length() > 2000) {
+                    return new Message<>("error", "Body is too long, max 2000");
+                }
                 statement.execute("INSERT INTO Posts(Header, Body, UserID) VALUES('" + contents.getHeader() + "', '" + contents.getBody() + "', '" + user.getId() + "');");
             }
             return new Message<>("ok", "");
@@ -199,7 +209,7 @@ public class Handler implements Runnable {
     }
 
     // Creates a comment
-    // Fails if the user isn't logged in, there is no comment provided or the database unexpectedly fails
+    // Fails if the user isn't logged in, there is no comment provided, the comment is too long or the database unexpectedly fails
     private Message<String> createComment(CreateCommentForm contents) {
         // The user needs to be logged in
         if (user == null) {
@@ -209,6 +219,11 @@ public class Handler implements Runnable {
         // There must be some contents to the comment
         if (contents.getContent() == null || contents.getContent().isBlank()) {
             return new Message<>("error", "No comment provided");
+        }
+
+        // The comment cannot be more than 200 characters long
+        if (contents.getContent().length() > 200) {
+            return new Message<>("error", "Comment is too long, max 200");
         }
 
         try {

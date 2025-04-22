@@ -27,13 +27,13 @@ public class Server {
                 + "PasswordHash VARCHAR(64) NOT NULL);");
         statement.execute("CREATE TABLE IF NOT EXISTS Posts ("
                 + "PostID INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + "Header VARCHAR(300) NOT NULL,"
+                + "Header VARCHAR(200) NOT NULL,"
                 + "Body VARCHAR(2000),"
                 + "UserID INTEGER NOT NULL,"
                 + "FOREIGN KEY (UserID) REFERENCES Users(UserID));");
         statement.execute("CREATE TABLE IF NOT EXISTS Comments ("
                 + "CommentID INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + "Content VARCHAR(300) NOT NULL,"
+                + "Content VARCHAR(200) NOT NULL,"
                 + "UserID INTEGER NOT NULL,"
                 + "PostID INTEGER NOT NULL,"
                 + "FOREIGN KEY (UserID) REFERENCES Users(UserID)"
