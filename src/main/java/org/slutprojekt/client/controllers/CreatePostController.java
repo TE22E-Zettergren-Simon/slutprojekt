@@ -1,7 +1,9 @@
 package org.slutprojekt.client.controllers;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import org.slutprojekt.client.FXMLUtils;
 import org.slutprojekt.client.state.ConnectionHolder;
 import org.slutprojekt.shared.models.CreatePostForm;
@@ -11,9 +13,11 @@ import java.net.SocketException;
 
 public class CreatePostController {
     @FXML
-    private TextArea headerInput;
+    private TextField headerInput;
     @FXML
     private TextArea bodyInput;
+    @FXML
+    private Label errorLabel;
 
     @FXML
     private void submit() {
@@ -27,16 +31,14 @@ public class CreatePostController {
             Message in = ConnectionHolder.getInstance().getSocketConnection().read();
 
             // Verify data
-            //TODO: Probably best to not just return
             if (in == null) {
-                return;
+                errorLabel.setText("No data received");
+            } else if (in.getMessage().equals("error")) {
+                errorLabel.setText((String) in.getData());
+            } else {
+                // Switch to the home feed if creating the post went ok
+                FXMLUtils.loadNewView("views/home.fxml", headerInput.getScene());
             }
-            if (in.getMessage().equals("error")) {
-                return;
-            }
-
-            // Switch to the home feed if creating the post went ok
-            FXMLUtils.loadNewView("views/home.fxml", headerInput.getScene());
         } catch (SocketException e) {
             FXMLUtils.loadNewView("views/no-connection.fxml", headerInput.getScene());
         } catch (Exception e) {

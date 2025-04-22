@@ -1,6 +1,7 @@
 package org.slutprojekt.client.controllers;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import org.slutprojekt.client.FXMLUtils;
@@ -18,6 +19,8 @@ public class PostController {
     private VBox root;
     @FXML
     private TextField commentInput;
+    @FXML
+    private Label errorLabel;
     @FXML
     private Feed<CommentComponent> feed;
 
@@ -79,8 +82,8 @@ public class PostController {
     @FXML
     private void submitComment() {
         // Don't send the comment if it is blank
-        //TODO: Better error handling
         if (commentInput.getText().isBlank()) {
+            errorLabel.setText("Please enter a comment");
             return;
         }
 
@@ -94,17 +97,17 @@ public class PostController {
             Message in = ConnectionHolder.getInstance().getSocketConnection().read();
 
             // Verify data
-            //TODO: Better error handling
-            if (in == null || in.getMessage().equals("error")) {
-                System.out.println("failed to submit comment");
-                return;
+            if (in == null) {
+                errorLabel.setText("No data received");
+            } else if (in.getMessage().equals("error")) {
+                errorLabel.setText((String) in.getData());
+            } else {
+                reload();
             }
         } catch (SocketException e) {
             FXMLUtils.loadNewView("views/no-connection.fxml", feed.getScene());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-        reload();
     }
 }

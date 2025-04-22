@@ -25,6 +25,7 @@
         <TextField fx:id="commentInput" promptText="Write a comment"/>
         <Button onAction="#submitComment" text="Submit"/>
     </HBox>
+    <Label fx:id="errorLabel"/>
 
     <Feed fx:id="feed"/>
 </VBox>
