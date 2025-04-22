@@ -58,19 +58,16 @@ public class PostController {
             Message in = ConnectionHolder.getInstance().getSocketConnection().read();
 
             // Verify the comments
-            //TODO: Better error handling, write something to the user in the window
             if (in == null) {
-                return;
-            }
-            if (!(in.getData() instanceof ArrayList)) {
-                System.out.println(in.getData());
-                return;
-            }
-
-            // Add the comments to the feed
-            for (Comment comment : (ArrayList<Comment>) in.getData()) {
-                CommentComponent commentComponent = new CommentComponent(comment);
-                feed.addBottom(commentComponent);
+                errorLabel.setText("No data received");
+            } else if (in.getMessage().equals("error")) {
+                errorLabel.setText((String) in.getData());
+            } else {
+                // Add the comments to the feed
+                for (Comment comment : (ArrayList<Comment>) in.getData()) {
+                    CommentComponent commentComponent = new CommentComponent(comment);
+                    feed.addBottom(commentComponent);
+                }
             }
         } catch (SocketException e) {
             FXMLUtils.loadNewView("views/no-connection.fxml", feed.getScene());

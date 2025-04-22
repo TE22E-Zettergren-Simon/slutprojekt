@@ -1,6 +1,7 @@
 package org.slutprojekt.client.controllers;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import org.slutprojekt.client.FXMLUtils;
 import org.slutprojekt.client.components.Feed;
 import org.slutprojekt.client.components.LongPostComponent;
@@ -14,6 +15,8 @@ import java.net.SocketException;
 import java.util.ArrayList;
 
 public class HomeController {
+    @FXML
+    private Label errorLabel;
     @FXML
     private Feed<PostComponent> feed;
 
@@ -30,7 +33,7 @@ public class HomeController {
             ConnectionHolder.getInstance().getSocketConnection().write(out);
             Message in = ConnectionHolder.getInstance().getSocketConnection().read();
 
-            // If logging out went wrong, do nothing
+            // If logging out went wrong, do nothing as it should never happen
             if (in == null) {
                 return;
             }
@@ -64,19 +67,17 @@ public class HomeController {
 
             // Verify the data
             if (in == null) {
-                return;
-            }
-            if (!(in.getData() instanceof ArrayList)) {
-                System.out.println(in.getData());
-                return;
-            }
-
-            // Add the posts
-            for (Post post: (ArrayList<Post>) in.getData()) {
-                if (post instanceof ShortPost) {
-                    feed.addTop(new ShortPostComponent((ShortPost) post));
-                } else {
-                    feed.addTop(new LongPostComponent((LongPost) post));
+                errorLabel.setText("No data received");
+            } else if (in.getMessage().equals("error")) {
+                errorLabel.setText((String) in.getData());
+            } else {
+                // Add the posts
+                for (Post post : (ArrayList<Post>) in.getData()) {
+                    if (post instanceof ShortPost) {
+                        feed.addTop(new ShortPostComponent((ShortPost) post));
+                    } else {
+                        feed.addTop(new LongPostComponent((LongPost) post));
+                    }
                 }
             }
         } catch (SocketException e) {

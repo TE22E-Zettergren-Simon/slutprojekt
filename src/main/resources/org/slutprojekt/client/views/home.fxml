@@ -17,5 +17,6 @@
     <Button onAction="#logout" text="Logout"/>
     <Button onAction="#toCreatePost" text="Post something!"/>
     <Button onAction="#reload" text="Reload"/>
+    <Label fx:id="errorLabel"/>
     <Feed fx:id="feed"/>
 </VBox>
