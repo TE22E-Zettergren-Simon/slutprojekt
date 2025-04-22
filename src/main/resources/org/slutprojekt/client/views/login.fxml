@@ -12,6 +12,7 @@
             prefHeight="400.0" prefWidth="600.0"
             alignment="CENTER" spacing="10.0">
 
+    <Button onAction="#toStartScreen" text="Go back"/>
     <TextField fx:id="usernameField" promptText="username"/>
     <PasswordField fx:id="passwordField" promptText="password"/>
     <Button onAction="#submit" text="Login"/>

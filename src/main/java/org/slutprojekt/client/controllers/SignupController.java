@@ -24,6 +24,11 @@ public class SignupController {
     private Label errorLabel;
 
     @FXML
+    private void toStartScreen() {
+        FXMLUtils.loadNewView("views/start.fxml", usernameField.getScene());
+    }
+
+    @FXML
     private void submit() {
         // Gets the username and makes sure it is not blank
         String username = usernameField.getText();
