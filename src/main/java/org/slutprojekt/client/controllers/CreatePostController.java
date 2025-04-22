@@ -22,6 +22,10 @@ public class CreatePostController {
     @FXML
     private void submit() {
         try {
+            // Don't send message if no header is provided
+            if (headerInput.getText().isBlank()) {
+                errorLabel.setText("Please enter a post header");
+            }
             // Send a message and receive a response
             Message<CreatePostForm> out = new Message<>(
                     "create post",

@@ -13,7 +13,7 @@
             alignment="TOP_CENTER" spacing="10.0">
 
     <TextField fx:id="headerInput" promptText="Header"/>
-    <TextArea fx:id="bodyInput" promptText="Body"/>
+    <TextArea fx:id="bodyInput" promptText="Body (optional)"/>
     <Button onAction="#submit" text="Submit"/>
     <Label fx:id="errorLabel"/>
 </VBox>
