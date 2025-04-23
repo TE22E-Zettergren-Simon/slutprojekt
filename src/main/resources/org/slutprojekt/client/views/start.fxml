@@ -7,13 +7,14 @@
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.slutprojekt.client.controllers.StartController"
-            prefHeight="400.0" prefWidth="600.0"
-            alignment="CENTER" spacing="10.0"
-            fx:id="root">
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.slutprojekt.client.controllers.StartController"
+      prefHeight="400.0" prefWidth="600.0"
+      stylesheets="@../styles/global.css"
+      alignment="CENTER" spacing="10.0"
+      fx:id="root">
 
-    <Label text="Welcome to Skibider"/>
+    <Label text="Welcome to Skibider" styleClass="title"/>
     <Button onAction="#toLoginScreen" text="Login"/>
     <Button onAction="#toSignupScreen" text="Signup"/>
 </VBox>

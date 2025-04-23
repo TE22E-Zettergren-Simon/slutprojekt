@@ -7,13 +7,14 @@
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.slutprojekt.client.controllers.CreatePostController"
-            prefHeight="400.0" prefWidth="600.0"
-            alignment="TOP_CENTER" spacing="10.0">
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.slutprojekt.client.controllers.CreatePostController"
+      prefHeight="400.0" prefWidth="600.0"
+      stylesheets="@../styles/global.css"
+      alignment="TOP_CENTER" spacing="10.0">
 
     <TextField fx:id="headerInput" promptText="Header"/>
     <TextArea fx:id="bodyInput" promptText="Body (optional)"/>
     <Button onAction="#submit" text="Submit"/>
-    <Label fx:id="errorLabel"/>
+    <Label fx:id="errorLabel" styleClass="error"/>
 </VBox>

@@ -16,5 +16,6 @@ public class ShortPostComponent extends PostComponent {
 
     @Override
     public void extend() {
+        getStyleClass().add("extended");
     }
 }

@@ -20,5 +20,6 @@ public class LongPostComponent extends PostComponent {
     @Override
     public void extend() {
         ((Label) getChildren().getLast()).setText(post.getBody());
+        getStyleClass().add("extended");
     }
 }

@@ -7,10 +7,11 @@
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.slutprojekt.client.controllers.NoConnectionController"
-            prefHeight="400.0" prefWidth="600.0"
-            alignment="CENTER" spacing="10.0">
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="org.slutprojekt.client.controllers.NoConnectionController"
+      prefHeight="400.0" prefWidth="600.0"
+      stylesheets="@../styles/global.css"
+      alignment="CENTER" spacing="10.0">
 
     <Label fx:id="infoLabel" text="Could not connect to a server"/>
     <Button onAction="#tryReconnecting" text="Click to reconnect"/>
