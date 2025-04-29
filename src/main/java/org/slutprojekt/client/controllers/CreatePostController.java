@@ -31,13 +31,11 @@ public class CreatePostController {
                     "create post",
                     new CreatePostForm(headerInput.getText(), bodyInput.getText())
             );
-            ConnectionHolder.getInstance().getSocketConnection().write(out);
-            Message in = ConnectionHolder.getInstance().getSocketConnection().read();
+            ConnectionHolder.getInstance().write(out);
+            Message in = ConnectionHolder.getInstance().read();
 
             // Verify data
-            if (in == null) {
-                errorLabel.setText("No data received");
-            } else if (in.getMessage().equals("error")) {
+            if (in.getMessage().equals("error")) {
                 errorLabel.setText((String) in.getData());
             } else {
                 // Switch to the home feed if creating the post went ok

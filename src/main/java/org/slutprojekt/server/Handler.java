@@ -32,40 +32,33 @@ public class Handler implements Runnable {
             // Wait for a message to arrive, handle it, repeat
             while (true) {
                 Message in = socketConnection.read();
-                Message out = handleMessageIn(in);
+                Message out;
+                try {
+                    // Do the relevant logic dependent on the command
+                    out = switch (in.getMessage()) {
+                        case "login" -> login((LoginForm) in.getData());
+                        case "signup" -> signup((LoginForm) in.getData());
+                        case "logout" -> logout();
+                        case "create post" -> createPost((CreatePostForm) in.getData());
+                        case "create comment" -> createComment((CreateCommentForm) in.getData());
+                        case "get feed" -> getFeed();
+                        case "get comments" -> getComments((Post) in.getData());
+                        default -> new Message<>("error", "Unknown command");
+                    };
+                } catch (ClassCastException e) {
+                    // If the data could not be cast to the needed datatype, an error is returned
+                    out = new Message<>("error", "Wrong datatype for the command");
+                }
                 socketConnection.write(out);
             }
         } catch (SocketException e) {
+            // Safely disconnect from the user if the connection cuts
             if (user != null) {
                 currentUsers.remove(user.getUsername());
             }
             System.out.println("A client disconnected");
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private Message handleMessageIn(Message in) {
-        // The message must exist
-        if (in == null) {
-            return new Message<>("error", "The message in is null");
-        }
-
-        try {
-            // Do the relevant logic dependent on the command
-            return switch (in.getMessage()) {
-                case "login" -> login((LoginForm) in.getData());
-                case "signup" -> signup((LoginForm) in.getData());
-                case "logout" -> logout();
-                case "create post" -> createPost((CreatePostForm) in.getData());
-                case "create comment" -> createComment((CreateCommentForm) in.getData());
-                case "get feed" -> getFeed();
-                case "get comments" -> getComments((Post) in.getData());
-                default -> new Message<>("error", "Unknown command");
-            };
-        } catch (ClassCastException e) {
-            // If the data could not be cast to the needed datatype, an error is returned
-            return new Message<>("error", "Wrong datatype for the command");
         }
     }
 

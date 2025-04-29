@@ -54,13 +54,11 @@ public class PostController {
         try {
             // Get the post's comments
             Message<Post> out = new Message<>("get comments", post);
-            ConnectionHolder.getInstance().getSocketConnection().write(out);
-            Message in = ConnectionHolder.getInstance().getSocketConnection().read();
+            ConnectionHolder.getInstance().write(out);
+            Message in = ConnectionHolder.getInstance().read();
 
             // Verify the comments
-            if (in == null) {
-                errorLabel.setText("No data received");
-            } else if (in.getMessage().equals("error")) {
+            if (in.getMessage().equals("error")) {
                 errorLabel.setText((String) in.getData());
             } else {
                 // Add the comments to the feed
@@ -90,13 +88,11 @@ public class PostController {
                     "create comment",
                     new CreateCommentForm(commentInput.getText(), post.getId())
             );
-            ConnectionHolder.getInstance().getSocketConnection().write(out);
-            Message in = ConnectionHolder.getInstance().getSocketConnection().read();
+            ConnectionHolder.getInstance().write(out);
+            Message in = ConnectionHolder.getInstance().read();
 
             // Verify data
-            if (in == null) {
-                errorLabel.setText("No data received");
-            } else if (in.getMessage().equals("error")) {
+            if (in.getMessage().equals("error")) {
                 errorLabel.setText((String) in.getData());
             } else {
                 reload();

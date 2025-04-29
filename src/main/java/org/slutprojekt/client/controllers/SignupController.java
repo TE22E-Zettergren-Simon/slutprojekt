@@ -56,15 +56,9 @@ public class SignupController {
                     "signup",
                     new LoginForm(username, password1)
             );
-            ConnectionHolder.getInstance().getSocketConnection().write(out);
+            ConnectionHolder.getInstance().write(out);
 
-            Message in = ConnectionHolder.getInstance().getSocketConnection().read();
-
-            // The returned data should always be a string
-            if (!(in.getData() instanceof String)) {
-                errorLabel.setText("Wrong data format");
-                return;
-            }
+            Message in = ConnectionHolder.getInstance().read();
 
             // Display the error to the user if it is an error
             if (in.getMessage().equals("error")) {

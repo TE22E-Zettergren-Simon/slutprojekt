@@ -30,15 +30,12 @@ public class HomeController {
         try {
             // Try to log out
             Message out = new Message("logout", null);
-            ConnectionHolder.getInstance().getSocketConnection().write(out);
-            Message in = ConnectionHolder.getInstance().getSocketConnection().read();
+            ConnectionHolder.getInstance().write(out);
+            Message in = ConnectionHolder.getInstance().read();
 
-            // If logging out went wrong, do nothing as it should never happen
-            if (in == null) {
-                return;
-            }
+            // If logging out went wrong, print something, it should never happen
             if (in.getMessage().equals("error")) {
-                return;
+                errorLabel.setText("Failed to logout");
             }
 
             // Otherwise, go to start screen
@@ -62,13 +59,11 @@ public class HomeController {
         try {
             // Get the feed
             Message out = new Message("get feed", null);
-            ConnectionHolder.getInstance().getSocketConnection().write(out);
-            Message in = ConnectionHolder.getInstance().getSocketConnection().read();
+            ConnectionHolder.getInstance().write(out);
+            Message in = ConnectionHolder.getInstance().read();
 
             // Verify the data
-            if (in == null) {
-                errorLabel.setText("No data received");
-            } else if (in.getMessage().equals("error")) {
+            if (in.getMessage().equals("error")) {
                 errorLabel.setText((String) in.getData());
             } else {
                 // Add the posts

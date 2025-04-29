@@ -48,15 +48,9 @@ public class LoginController {
                     "login",
                     new LoginForm(username, password)
             );
-            ConnectionHolder.getInstance().getSocketConnection().write(out);
+            ConnectionHolder.getInstance().write(out);
 
-            Message in = ConnectionHolder.getInstance().getSocketConnection().read();
-
-            // The returned message should always be with a String
-            if (!(in.getData() instanceof String)) {
-                errorLabel.setText("Wrong data format");
-                return;
-            }
+            Message in = ConnectionHolder.getInstance().read();
 
             // Display a possible error message from the server
             if (in.getMessage().equals("error")) {

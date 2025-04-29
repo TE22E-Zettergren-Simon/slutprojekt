@@ -7,7 +7,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class SocketConnection implements AutoCloseable {
+// A connection over a socket, methods to read and write Messages easily
+public class SocketConnection {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
@@ -28,12 +29,5 @@ public class SocketConnection implements AutoCloseable {
             throw new IOException("Unusable input type");
         }
         return (Message) obj;
-    }
-
-    @Override
-    public void close() throws Exception {
-        socket.close();
-        out.close();
-        in.close();
     }
 }
