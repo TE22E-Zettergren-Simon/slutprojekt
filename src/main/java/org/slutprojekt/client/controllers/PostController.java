@@ -10,7 +10,6 @@ import org.slutprojekt.client.state.ConnectionHolder;
 import org.slutprojekt.client.state.CurrentPostHolder;
 import org.slutprojekt.shared.models.*;
 
-import java.io.IOException;
 import java.net.SocketException;
 import java.util.ArrayList;
 

@@ -3,10 +3,10 @@ package org.slutprojekt.shared.models;
 import java.io.Serializable;
 
 public class Comment implements Serializable {
-    private int id;
-    private User creator;
-    private Post post;
-    private String content;
+    private final int id;
+    private final User creator;
+    private final Post post;
+    private final String content;
 
     public Comment(int id, User creator, Post post, String content) {
         this.id = id;

@@ -4,7 +4,7 @@ import javafx.scene.control.Label;
 import org.slutprojekt.shared.models.LongPost;
 
 public class LongPostComponent extends PostComponent {
-    private LongPost post;
+    private final LongPost post;
 
     public LongPostComponent(LongPost post) {
         super(post);

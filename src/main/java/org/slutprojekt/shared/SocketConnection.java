@@ -9,9 +9,9 @@ import java.net.Socket;
 
 // A connection over a socket, methods to read and write Messages easily
 public class SocketConnection {
-    private Socket socket;
-    private ObjectOutputStream out;
-    private ObjectInputStream in;
+    private final Socket socket;
+    private final ObjectOutputStream out;
+    private final ObjectInputStream in;
 
     public SocketConnection(Socket socket) throws IOException {
         this.socket = socket;

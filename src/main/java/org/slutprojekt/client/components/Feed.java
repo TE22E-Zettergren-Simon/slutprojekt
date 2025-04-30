@@ -5,7 +5,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
 public class Feed<T extends Node> extends ScrollPane {
-    private VBox vbox = new VBox();
+    private final VBox vbox = new VBox();
 
     public Feed() {
         setContent(vbox);

@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class Handler implements Runnable {
-    private SocketConnection socketConnection;
-    private Connection dbConnection;
+    private final SocketConnection socketConnection;
+    private final Connection dbConnection;
     private User user;
-    Set<String> currentUsers;
+    private final Set<String> currentUsers;
 
     public Handler(Socket socket, Connection dbConnection, Set<String> currentUsers) throws IOException {
         socketConnection = new SocketConnection(socket);

@@ -14,5 +14,5 @@ public abstract class PostComponent extends ContentComponent {
         });
     }
 
-    public void extend() {}
+    public abstract void extend();
 }

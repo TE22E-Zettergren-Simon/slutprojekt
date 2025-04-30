@@ -3,8 +3,8 @@ package org.slutprojekt.shared.models;
 import java.io.Serializable;
 
 public class CreateCommentForm implements Serializable {
-    private String content;
-    private int postID;
+    private final String content;
+    private final int postID;
 
     public CreateCommentForm(String content, int postID) {
         this.content = content;

@@ -3,8 +3,8 @@ package org.slutprojekt.shared.models;
 import java.io.Serializable;
 
 public class Message<T> implements Serializable {
-    private String message;
-    private T data;
+    private final String message;
+    private final T data;
 
     public Message(String message, T data) {
         this.message = message;

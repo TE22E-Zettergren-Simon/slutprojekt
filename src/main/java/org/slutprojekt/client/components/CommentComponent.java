@@ -4,7 +4,7 @@ import javafx.scene.control.Label;
 import org.slutprojekt.shared.models.Comment;
 
 public class CommentComponent extends ContentComponent{
-    private Comment comment;
+    private final Comment comment;
 
     public CommentComponent(Comment comment) {
         super(comment.getCreator());

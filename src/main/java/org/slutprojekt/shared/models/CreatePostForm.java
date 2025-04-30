@@ -3,8 +3,8 @@ package org.slutprojekt.shared.models;
 import java.io.Serializable;
 
 public class CreatePostForm implements Serializable {
-    private String header;
-    private String body;
+    private final String header;
+    private final String body;
 
     public CreatePostForm(String header, String body) {
         this.header = header;

@@ -4,7 +4,7 @@ import javafx.scene.control.Label;
 import org.slutprojekt.shared.models.ShortPost;
 
 public class ShortPostComponent extends PostComponent {
-    private ShortPost post;
+    private final ShortPost post;
 
     public ShortPostComponent(ShortPost post) {
         super(post);

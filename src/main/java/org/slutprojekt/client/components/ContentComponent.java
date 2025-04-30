@@ -5,7 +5,7 @@ import javafx.scene.layout.VBox;
 import org.slutprojekt.shared.models.User;
 
 public abstract class ContentComponent extends VBox {
-    protected User creator;
+    protected final User creator;
 
     public ContentComponent(User creator) {
         this.creator = creator;

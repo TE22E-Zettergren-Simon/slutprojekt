@@ -3,7 +3,7 @@ package org.slutprojekt.client.state;
 import org.slutprojekt.shared.models.Post;
 
 public class CurrentPostHolder {
-    private static CurrentPostHolder instance = new CurrentPostHolder();
+    private static final CurrentPostHolder instance = new CurrentPostHolder();
     private Post post;
 
     private CurrentPostHolder() {}
