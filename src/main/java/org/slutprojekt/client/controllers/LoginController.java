@@ -12,6 +12,8 @@ import org.slutprojekt.shared.models.Message;
 import java.io.IOException;
 import java.net.SocketException;
 
+// A controller for the login screen (login.fxml)
+// Used to log in to an account and then switch to the home screen
 public class LoginController {
     @FXML
     private TextField usernameField;
@@ -26,6 +28,9 @@ public class LoginController {
         FXMLUtils.loadNewView("views/start.fxml", usernameField.getScene());
     }
 
+    // Attempts to log in
+    // Can fail if the inputs are bad or the server fails
+    // If a failure happens an error message is displayed or the screen switches to the no connection screen
     @FXML
     private void submit() {
         // Get the username and make sure it isn't blank

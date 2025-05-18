@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+// Controller for the no connection screen (no-connection.fxml)
+// The user is directed here if the connection to the server ever fails
+// Allows the user to try to re-establish a connection to the server
 public class NoConnectionController {
     @FXML
     private Label infoLabel;

@@ -10,10 +10,12 @@ import org.slutprojekt.client.components.ShortPostComponent;
 import org.slutprojekt.client.state.ConnectionHolder;
 import org.slutprojekt.shared.models.*;
 
-import java.io.IOException;
 import java.net.SocketException;
 import java.util.ArrayList;
 
+// Controller for the home screen (home.fxml)
+// Displays the main feed, and allows the user to go to a specific posts screen, and go to a screen to create new posts,
+// and logout
 public class HomeController {
     @FXML
     private Label errorLabel;
@@ -25,6 +27,8 @@ public class HomeController {
         reload();
     }
 
+    // Tries to log out
+    // Really shouldn't fail, only if the connection is bad should a failure happen
     @FXML
     private void logout() {
         try {

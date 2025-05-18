@@ -11,6 +11,8 @@ import org.slutprojekt.shared.models.Message;
 
 import java.net.SocketException;
 
+// Controller for the create post screen (create-post.fxml)
+// Allows the user to crete a post on the server
 public class CreatePostController {
     @FXML
     private TextField headerInput;
@@ -19,6 +21,9 @@ public class CreatePostController {
     @FXML
     private Label errorLabel;
 
+    // Attempts to make a post
+    // Fails if the input is bad or the server fails
+    // An error message is displayed or the screen switches to the no connection screen if a failure happens
     @FXML
     private void submit() {
         try {

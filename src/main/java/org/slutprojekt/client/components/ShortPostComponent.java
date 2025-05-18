@@ -3,6 +3,8 @@ package org.slutprojekt.client.components;
 import javafx.scene.control.Label;
 import org.slutprojekt.shared.models.ShortPost;
 
+// A reusable component displaying a short post
+// When extended the styling changes a little
 public class ShortPostComponent extends PostComponent {
     private final ShortPost post;
 

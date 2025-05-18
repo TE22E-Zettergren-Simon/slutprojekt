@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 // Holds the connection to the server
+// Used to share the connection between controllers
 public class ConnectionHolder {
     private static final ConnectionHolder instance = new ConnectionHolder();
     private SocketConnection socketConnection;

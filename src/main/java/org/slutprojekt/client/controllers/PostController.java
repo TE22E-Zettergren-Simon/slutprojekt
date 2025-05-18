@@ -13,6 +13,8 @@ import org.slutprojekt.shared.models.*;
 import java.net.SocketException;
 import java.util.ArrayList;
 
+// Controller for a specific posts screen (post.fxml)
+// Displays the extended version of a post and all the comments, also allows the user to comment
 public class PostController {
     @FXML
     private VBox root;
@@ -73,6 +75,8 @@ public class PostController {
         }
     }
 
+    // Tries to send a comment to the server
+    // Fails with a displayed error message if the input is bad
     @FXML
     private void submitComment() {
         // Don't send the comment if it is blank

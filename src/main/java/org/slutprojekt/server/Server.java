@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+// The server repeatedly listens for connections dispatches handlers for each connection in the thread pool
 public class Server {
     public Server(String host, int port, String dburl) throws Exception {
         ExecutorService pool = Executors.newFixedThreadPool(20);

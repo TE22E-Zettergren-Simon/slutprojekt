@@ -12,6 +12,8 @@ import org.slutprojekt.shared.models.Message;
 import java.io.IOException;
 import java.net.SocketException;
 
+// A controller for the signup screen (signup.fxml)
+// Used to sign up a new account to the server
 public class SignupController {
     @FXML
     private TextField usernameField;
@@ -28,6 +30,9 @@ public class SignupController {
         FXMLUtils.loadNewView("views/start.fxml", usernameField.getScene());
     }
 
+    // Attempts to sign up
+    // Can fail if the usr input is bad or the server fails
+    // If it fails it either displays a message or switches to the no connection screen
     @FXML
     private void submit() {
         // Gets the username and makes sure it is not blank

@@ -4,6 +4,8 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 import org.slutprojekt.client.FXMLUtils;
 
+// Controller for the start screen (start.fxml)
+// Really only redirect to the login and signup screens
 public class StartController {
     @FXML
     private VBox root;

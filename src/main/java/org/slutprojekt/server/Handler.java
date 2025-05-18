@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Set;
 
+// Handles a connection to a client
 public class Handler implements Runnable {
     private final SocketConnection socketConnection;
     private final Connection dbConnection;

@@ -3,6 +3,8 @@ package org.slutprojekt.client.components;
 import javafx.scene.control.Label;
 import org.slutprojekt.shared.models.LongPost;
 
+// Can be extended to show the whole post, not just the heading
+// So that the post does not take up too much space on the main feed
 public class LongPostComponent extends PostComponent {
     private final LongPost post;
 

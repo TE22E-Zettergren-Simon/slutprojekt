@@ -10,7 +10,10 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
 
+// Entry point for the client
 public class Main extends Application {
+    // Tries to connect to the server and go to the start screen
+    // If no connection is established it switches to the no connection screen
     @Override
     public void start(Stage stage) throws Exception {
         Scene scene;
